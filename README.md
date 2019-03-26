@@ -11,6 +11,7 @@ The landscape layout still works though, and can be tested by clicking "Start Tr
 
 the newQuestion method used to work fine for switching layouts, I don't know why the questionList resets.
 
+Feutures: 
 + Multiple (4) choice Trivia
 + (sort of) Functional Landscape Layout.
 + User can enter highscore name on start.
