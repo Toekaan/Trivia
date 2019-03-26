@@ -1,5 +1,8 @@
 package com.example.trivia;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 
 public class Question {
@@ -66,4 +69,5 @@ public class Question {
     public void setAnswers(ArrayList<String> answers) {
         this.answers = answers;
     }
+
 }

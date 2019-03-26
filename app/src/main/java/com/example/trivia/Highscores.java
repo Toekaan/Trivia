@@ -44,7 +44,6 @@ public class Highscores implements Response.Listener<String>, Response.ErrorList
     public void postHighscore(Highscores.Callback activity, final Highscore highscore) {
 
         // help with POST request source: (https://gist.github.com/mombrea/7250835)
-
         StringRequest request = new StringRequest(Request.Method.POST, url, this, this){
             @Override
             protected Map<String, String> getParams() {
@@ -65,22 +64,6 @@ public class Highscores implements Response.Listener<String>, Response.ErrorList
         queue.start();
         this.activity = activity;
         activity.sendHighscores();
-
-        /*JSONObject highscoreJSON = new JSONObject();
-        try {
-            highscoreJSON.put("name", highscore.getName());
-            highscoreJSON.put("score", Integer.toString(highscore.getScore()));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        try {
-            Log.d("postHighscore", highscoreJSON.getString("score"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, highscoreJSON, this, this);
-        */
-
     }
 
     @Override
@@ -92,7 +75,6 @@ public class Highscores implements Response.Listener<String>, Response.ErrorList
     @Override
     public void onResponse(String response) {
         Log.d("Response", response);
-
     }
 
 }

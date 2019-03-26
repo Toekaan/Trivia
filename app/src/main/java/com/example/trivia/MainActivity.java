@@ -26,10 +26,13 @@ public class MainActivity extends AppCompatActivity implements TriviaRequest.Cal
     int count = 0; // current question
     int score = 0; // user score
     int correctAnswer; // the correct answer~
-    String name = "Jandries"; // user should be able to fill in their own name
 
-    // maximum amount of questions (might change later to be dynamic, if menu is ever added)
-    int max = 1; // start counting from 0 aka 10.
+    // initialize name intent
+    Intent nameIntent;
+    String name;
+
+    // maximum amount of questions
+    int max = 9;
 
     // initialize buttons to be used throughout mainactivity
     Button answer1;
@@ -48,11 +51,13 @@ public class MainActivity extends AppCompatActivity implements TriviaRequest.Cal
         answer3 = findViewById(R.id.answer3);
         answer4 = findViewById(R.id.answer4);
 
-        // give wait indication to user
-
-
-        // request trivia questions
+        // request trivia questions and set name
         if (savedInstanceState == null) {
+            // get user name from intent and save to name variable for later use
+            nameIntent = getIntent();
+            name = nameIntent.getStringExtra("name");
+
+            // handle trivia API request
             Toast.makeText(this, "Loading Questions", Toast.LENGTH_SHORT).show();
             TriviaRequest req = new TriviaRequest(this);
             req.getQuestions(this);
@@ -62,8 +67,6 @@ public class MainActivity extends AppCompatActivity implements TriviaRequest.Cal
     @Override
     public void gotQuestions (ArrayList<Question> questions) {
         questionList = questions;
-        Log.d("TAG", questions.get(0).getCategory());
-
         // put information about first question into views
         newQuestion();
     }
@@ -125,10 +128,8 @@ public class MainActivity extends AppCompatActivity implements TriviaRequest.Cal
         }
 
         // check if user should be awarded any points
-        Log.d("ANSWERS:", "USER: " + Integer.toString(answer) + " CORRECT: " + Integer.toString(correctAnswer));
         if (correctAnswer == answer) {
             score = score + getPoints();
-            Log.d("SCORE", "Should've gone up...");
         }
 
         // wait for animation to finish
@@ -139,7 +140,6 @@ public class MainActivity extends AppCompatActivity implements TriviaRequest.Cal
                 count = count + 1;
                 // is the game over or not?
                 if (max == count) {
-                    Log.d("MAX == COUNT", "yes.");
                     // POST highscore to server first
                     Highscore highscore = new Highscore(score, name);
                     Highscores request = new Highscores(MainActivity.this);
@@ -202,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements TriviaRequest.Cal
                 answer4.setText(Html.fromHtml(current.getCorrectAnswer()));
             }
         }
-        // only two answers?
+        // default fail safe
         catch (IndexOutOfBoundsException e) {
             answer1.setText(current.getAnswers().get(0));
         }
@@ -227,11 +227,9 @@ public class MainActivity extends AppCompatActivity implements TriviaRequest.Cal
 
     @Override
     public void sendHighscores() {
-        Log.d("SEND POST", "we here.");
-
         // go to highscore activity
-        Intent intent = new Intent(MainActivity.this, HighscoresActivity.class);
-        startActivity(intent);
+        Intent highscoreIntent = new Intent(MainActivity.this, HighscoresActivity.class);
+        startActivity(highscoreIntent);
     }
 
     @Override
@@ -243,15 +241,16 @@ public class MainActivity extends AppCompatActivity implements TriviaRequest.Cal
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        // put value just so savedinstanceState
+        // put value just so savedinstanceState ia called
         outState.putInt("answer", answer);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);=
+        super.onRestoreInstanceState(savedInstanceState);
 
         answer = savedInstanceState.getInt("answer");
+
         newQuestion();
     }
 

@@ -14,6 +14,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.InterruptedIOException;
 import java.util.ArrayList;
 
 import javax.security.auth.callback.Callback;
@@ -29,7 +30,6 @@ public class TriviaRequest implements Response.Listener<JSONObject>, Response.Er
     // list of all the questions, requested on startup.
     private ArrayList<Question> questions = new ArrayList<>();
 
-    // might change this later into changeable url, chosen from menu
     String url = "https://opentdb.com/api.php?amount=10&type=multiple";
 
     public interface Callback {
@@ -46,14 +46,12 @@ public class TriviaRequest implements Response.Listener<JSONObject>, Response.Er
         RequestQueue queue = Volley.newRequestQueue(context);
         JsonObjectRequest request = new JsonObjectRequest(url, null, this, this);
         queue.add(request);
-        // ?
         this.activity = activity;
-        queue.start();
-
     }
 
     @Override
     public void onErrorResponse(VolleyError error) {
+        error.printStackTrace();
         activity.gotQuestionsError(error.getMessage());
     }
 
@@ -89,8 +87,6 @@ public class TriviaRequest implements Response.Listener<JSONObject>, Response.Er
 
                 // add question to questions list
                 questions.add(question);
-                Log.d("LOOPCHECK", Integer.toString(count));
-                Log.d("RESPONSE:", Integer.toString(response.length()));
                 count++;
             }
         }
